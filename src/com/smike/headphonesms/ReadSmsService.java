@@ -44,7 +44,6 @@ public class ReadSmsService extends Service {
   public int onStartCommand(Intent intent, int flags, int startId) {
     final List<String> messages = intent.getStringArrayListExtra(HeadphoneSmsApp.MESSAGES_EXTRA);
 
-
     synchronized(messageQueue) {
       if (tts != null) {
         messageQueue.addAll(messages);
