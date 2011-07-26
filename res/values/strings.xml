@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World!</string>
-    <string name="app_name">HeadphoneSms</string>
+	<string name="hello">Hello World!</string>
+	<string name="app_name">HeadphoneSms</string>
+	<string-array name="activationModeLabels">
+		<item>Always On</item>
+		<item>Only with headphones</item>
+	</string-array>
+	<string-array name="activationModeValues">
+		<item>@string/activationModeValue_always</item>
+		<item>@string/activationModeValue_headphonesOnly</item>
+	</string-array>
+	<string name="prefsName">HeadphoneSmsPrefs</string>
+	<string name="prefsKey">prefs</string>
+	<string name="prefsKey_enabled">enabled</string>
+	<string name="prefsKey_activationMode">activationMode</string>
+	<string name="activationModeValue_always">ALWAYS_ON</string>
+	<string name="activationModeValue_headphonesOnly">HEADPHONES_ONLY</string>
 </resources>

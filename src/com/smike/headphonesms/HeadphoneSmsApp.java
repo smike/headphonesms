@@ -6,10 +6,12 @@ import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract.PhoneLookup;
 import android.telephony.SmsMessage;
 import android.util.Log;
@@ -22,8 +24,7 @@ public class HeadphoneSmsApp extends BroadcastReceiver {
 
   public void onReceive(Context context, Intent intent) {
     if (intent.getAction().equals(ACTION)) {
-      AudioManager audioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
-      if (audioManager.isBluetoothA2dpOn() || audioManager.isWiredHeadsetOn()) {
+      if (shouldRead(context)) {
         Log.i(LOG_TAG, "Headset connected, reading SMS");
         Bundle bundle = intent.getExtras();
         if (bundle != null) {
@@ -68,5 +69,24 @@ public class HeadphoneSmsApp extends BroadcastReceiver {
     String contactName = cursor.getString(nameFieldColumnIndex);
     cursor.close();
     return contactName;
+  }
+
+  private boolean shouldRead(Context context) {
+    PreferenceManager.setDefaultValues(context, R.xml.preferences, false);
+    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+
+    if (!sharedPreferences.getBoolean(context.getString(R.string.prefsKey_enabled), false)) {
+      return false;
+    }
+
+    String activationModeString =
+        sharedPreferences.getString(context.getString(R.string.prefsKey_activationMode), null);
+    if (activationModeString.equals(context.getString(R.string.activationModeValue_always))) {
+      return true;
+    }
+
+    // else if (activationModeString.equals(context.getString(R.string.activationModeValue_headphonesOnly))) {
+    AudioManager audioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
+    return audioManager.isBluetoothA2dpOn() || audioManager.isWiredHeadsetOn();
   }
 }
