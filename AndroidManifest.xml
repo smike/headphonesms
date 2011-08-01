@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest package="com.smike.headphonesms" xmlns:android="http://schemas.android.com/apk/res/android"
-	android:versionName="1.1" android:versionCode="4">
+	android:versionName="1.2" android:versionCode="5">
 
 	<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 	<uses-permission android:name="android.permission.READ_CONTACTS" />
@@ -14,6 +14,15 @@
 			</intent-filter>
 		</receiver>
 		<service android:enabled="true" android:name=".ReadSmsService"></service>
+
+		<receiver android:name=".OnOffAppWidgetProvider">
+			<intent-filter>
+				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+			</intent-filter>
+			<meta-data android:name="android.appwidget.provider"
+				android:resource="@xml/onoff_widget_info" />
+		</receiver>
+		<service android:name=".ToggleOnOffService"></service>
 
 		<meta-data android:name="com.google.android.backup.api_key"
 			android:value="AEdPqrEAAAAIiYoK0S2KEPwQ6zknGOTpYv6f8EsgFUo-KrSzmA" />

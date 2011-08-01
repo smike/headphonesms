@@ -74,7 +74,6 @@ public class HeadphoneSmsApp extends BroadcastReceiver {
   private boolean shouldRead(Context context) {
     PreferenceManager.setDefaultValues(context, R.xml.preferences, false);
     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-
     if (!sharedPreferences.getBoolean(context.getString(R.string.prefsKey_enabled), false)) {
       return false;
     }

@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:title="Headphone SMS Settings">
-
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:title="Headphone SMS Settings">
 	<CheckBoxPreference android:persistent="true"
 		android:defaultValue="true" 
-		android:key="enabled" 
+		android:key="@string/prefsKey_enabled" 
 		android:summary="Read incoming text messages"
 		android:title="Enabled"></CheckBoxPreference>
-	<ListPreference android:key="activationMode"
-									android:summary="Choose when to read messages" 
-									android:title="Activation Mode"
-									android:entryValues="@array/activationModeValues" 
-									android:entries="@array/activationModeLabels" android:defaultValue="@string/activationModeValue_headphonesOnly"></ListPreference>
-
-
-
+	<ListPreference android:key="@string/prefsKey_activationMode"
+		android:summary="Choose when to read messages" 
+		android:title="Activation Mode"
+		android:entryValues="@array/activationModeValues" 
+		android:entries="@array/activationModeLabels" 
+		android:defaultValue="@string/activationModeValue_headphonesOnly" 
+		android:persistent="true"></ListPreference>
 </PreferenceScreen>
