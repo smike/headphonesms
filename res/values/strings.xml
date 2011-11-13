@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="app_name">Headphone SMS</string>
-	<string-array name="activationModeLabels">
+	<string name="prefs_screen_title">Headphone SMS Settings</string>
+	
+	<string name="enabled_summary">Read incoming messages</string>
+	<string name="enabled_title">Enabled</string>
+	
+	<string name="activationMode_summary">Choose when to read messages</string>
+	<string name="activationMode_title">Activation Mode</string>
+	<string-array name="activationMode_labels">
 		<item>Always On</item>
 		<item>Only with headphones</item>
 	</string-array>
-	<string-array name="activationModeValues">
+	<string-array name="activationMode_values">
 		<item>@string/activationModeValue_always</item>
 		<item>@string/activationModeValue_headphonesOnly</item>
 	</string-array>
+	
 	<string name="prefsName">HeadphoneSmsPrefs</string>
 	<string name="prefsKey">prefs</string>
 	<string name="prefsKey_enabled">enabled</string>
