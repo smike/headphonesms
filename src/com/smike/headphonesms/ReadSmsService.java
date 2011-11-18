@@ -15,6 +15,9 @@ import android.speech.tts.TextToSpeech;
 import android.util.Log;
 
 public class ReadSmsService extends Service {
+  public static final String MESSAGES_EXTRA = "com.smike.headphonesms.MESSAGES";
+  public static final String STOP_READING_EXTRA = "com.smike.headphonesms.STOP_READING";
+
   private static final String LOG_TAG = "HeadphoneSmsApp";
 
   private final LocalBinder binder = new LocalBinder();
@@ -42,9 +45,20 @@ public class ReadSmsService extends Service {
 
   @Override
   public int onStartCommand(Intent intent, int flags, int startId) {
-    final List<String> messages = intent.getStringArrayListExtra(HeadphoneSmsApp.MESSAGES_EXTRA);
-
     synchronized(messageQueue) {
+      if (intent.hasExtra(STOP_READING_EXTRA)) {
+        messageQueue.clear();
+        if (tts != null) {
+          // This will trigger onUtteranceCompleted, so we don't have to worry about cleaning up.
+          tts.stop();
+        }
+
+        // We still want to stick around long enough for onUtteranceCompleted to get called.
+        return START_STICKY;
+      }
+
+      final List<String> messages = intent.getStringArrayListExtra(MESSAGES_EXTRA);
+
       if (tts != null) {
         messageQueue.addAll(messages);
       } else {
@@ -56,7 +70,7 @@ public class ReadSmsService extends Service {
               public void onUtteranceCompleted(String utteranceId) {
                 audioManager.setStreamSolo(AudioManager.STREAM_VOICE_CALL, false);
                 synchronized (messageQueue) {
-                  messageQueue.remove();
+                  messageQueue.poll();
                   if (messageQueue.isEmpty()) {
                     tts.shutdown();
                     tts = null;
@@ -77,8 +91,9 @@ public class ReadSmsService extends Service {
           }
         });
       }
+
+      return START_STICKY;
     }
-    return START_STICKY;
   }
 
   public void speak(final String text) {

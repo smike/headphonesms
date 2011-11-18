@@ -4,13 +4,13 @@
 	<CheckBoxPreference android:key="@string/prefsKey_enabled"
 		android:title="@string/enabled_title"
 		android:summary="@string/enabled_summary"
-		android:defaultValue="true" 
+		android:defaultValue="true"
 		android:persistent="true"></CheckBoxPreference>
 	<ListPreference android:key="@string/prefsKey_activationMode"
 		android:title="@string/activationMode_title"
 		android:summary="@string/activationMode_summary"
-		android:entryValues="@array/activationMode_values" 
-		android:entries="@array/activationMode_labels" 
-		android:defaultValue="@string/activationModeValue_headphonesOnly" 
+		android:entryValues="@array/activationMode_values"
+		android:entries="@array/activationMode_labels"
+		android:defaultValue="@string/activationModeValue_headphonesOnly"
 		android:persistent="true"></ListPreference>
 </PreferenceScreen>

@@ -18,8 +18,6 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 
 public class HeadphoneSmsApp extends BroadcastReceiver {
-  public static final String MESSAGES_EXTRA = "com.smike.headphonesms.MESSAGES";
-
   private static final String LOG_TAG = "HeadphoneSmsApp";
   private static final String SMS_ACTION = "android.provider.Telephony.SMS_RECEIVED";
   private static final String CALL_ACTION = "android.intent.action.PHONE_STATE";
@@ -36,6 +34,7 @@ public class HeadphoneSmsApp extends BroadcastReceiver {
       if (intent.getAction().equals(SMS_ACTION)) {
         TelephonyManager telephonyManager =
             (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
+        // Don't start reading text messages when we are on the phone.
         if (telephonyManager.getCallState() == TelephonyManager.CALL_STATE_OFFHOOK) {
           Log.i(LOG_TAG, "Not reading SMS because the there is an ongoing call.");
           return;
@@ -52,15 +51,20 @@ public class HeadphoneSmsApp extends BroadcastReceiver {
           messages.add(text);
         }
       } else if (intent.getAction().equals(CALL_ACTION)) {
-        Log.i(LOG_TAG, "Call received connected, announcing caller.");
-
         String state = bundle.getString(TelephonyManager.EXTRA_STATE);
         if (state.equalsIgnoreCase(TelephonyManager.EXTRA_STATE_RINGING)) {
+          Log.i(LOG_TAG, "Call received, announcing caller.");
           String phonenumber = bundle.getString(TelephonyManager.EXTRA_INCOMING_NUMBER);
           String from = getContactNameFromNumber(phonenumber, context.getContentResolver());
 
           String text = "Receiving call from " + from + ".";
           messages.add(text);
+        } else if (state.equalsIgnoreCase(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
+          Log.i(LOG_TAG, "Call answered, stopping reading.");
+          Intent readSmsIntent = new Intent(context, ReadSmsService.class);
+          readSmsIntent.putExtra(ReadSmsService.STOP_READING_EXTRA, "");
+          context.startService(readSmsIntent);
+          return;
         }
       } else {
         Log.w(LOG_TAG, "Received unrecognized action broadcast: " + intent.getAction());
@@ -68,7 +72,7 @@ public class HeadphoneSmsApp extends BroadcastReceiver {
 
       if (!messages.isEmpty()) {
         Intent readSmsIntent = new Intent(context, ReadSmsService.class);
-        readSmsIntent.putStringArrayListExtra(MESSAGES_EXTRA, messages);
+        readSmsIntent.putStringArrayListExtra(ReadSmsService.MESSAGES_EXTRA, messages);
         context.startService(readSmsIntent);
       }
     } else {
