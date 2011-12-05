@@ -45,6 +45,11 @@ public class ReadSmsService extends Service {
 
   @Override
   public int onStartCommand(Intent intent, int flags, int startId) {
+    if (intent == null) {
+      // Service restarted after suspension. Nothing to do.
+      return START_STICKY;
+    }
+
     synchronized(messageQueue) {
       if (intent.hasExtra(STOP_READING_EXTRA)) {
         messageQueue.clear();
