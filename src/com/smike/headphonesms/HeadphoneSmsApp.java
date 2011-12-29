@@ -82,21 +82,25 @@ public class HeadphoneSmsApp extends BroadcastReceiver {
 
   private String getContactNameFromNumber(String number, ContentResolver contentResolver) {
     Uri uri = Uri.withAppendedPath(PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number));
-    Cursor cursor =
-        contentResolver.query(uri, new String[]{ PhoneLookup.DISPLAY_NAME }, null, null, null);
 
-    if (cursor.isAfterLast()) {
-      // If nothing was found, return the number....
-      Log.w(LOG_TAG, "Unable to look up incoming number in contacts");
-      return number;
+    Cursor cursor = null;
+    try {
+      cursor = contentResolver.query(uri, new String[]{ PhoneLookup.DISPLAY_NAME }, null, null, null);
+
+      if (cursor.isAfterLast()) {
+        // If nothing was found, return the number....
+        Log.w(LOG_TAG, "Unable to look up incoming number in contacts");
+        return number;
+      }
+
+      // ...otherwise return the first entry.
+      cursor.moveToFirst();
+      int nameFieldColumnIndex = cursor.getColumnIndex(PhoneLookup.DISPLAY_NAME);
+      String contactName = cursor.getString(nameFieldColumnIndex);
+      return contactName;
+    } finally {
+      cursor.close();
     }
-
-    // ...otherwise return the first entry.
-    cursor.moveToFirst();
-    int nameFieldColumnIndex = cursor.getColumnIndex(PhoneLookup.DISPLAY_NAME);
-    String contactName = cursor.getString(nameFieldColumnIndex);
-    cursor.close();
-    return contactName;
   }
 
   private boolean shouldRead(Context context) {
