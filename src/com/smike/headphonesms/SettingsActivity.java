@@ -29,6 +29,7 @@ public class SettingsActivity extends PreferenceActivity {
         OnOffAppWidgetProvider.update(getApplicationContext());
         BackupManager.dataChanged(getPackageName());
         onContentChanged();
+        updateView(sharedPreferences);
       }
     });
   }
@@ -38,10 +39,12 @@ public class SettingsActivity extends PreferenceActivity {
   private void updateView(SharedPreferences sharedPreferences) {
     String enabledKey = getString(R.string.prefsKey_enabled);
     CheckBoxPreference checkBoxPreference = (CheckBoxPreference)this.findPreference(enabledKey);
-    checkBoxPreference.setChecked(sharedPreferences.getBoolean(enabledKey, false));
+    boolean enabledValue = sharedPreferences.getBoolean(enabledKey, false);
+    checkBoxPreference.setChecked(enabledValue);
 
     String activationModeKey = getString(R.string.prefsKey_activationMode);
     ListPreference listPreference = (ListPreference)this.findPreference(activationModeKey);
     listPreference.setValue(sharedPreferences.getString(activationModeKey, null));
+    listPreference.setEnabled(enabledValue);
   }
 }
