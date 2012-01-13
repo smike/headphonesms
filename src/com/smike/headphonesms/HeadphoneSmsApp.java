@@ -36,7 +36,7 @@ public class HeadphoneSmsApp extends BroadcastReceiver {
             (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
         // Don't start reading text messages when we are on the phone.
         if (telephonyManager.getCallState() == TelephonyManager.CALL_STATE_OFFHOOK) {
-          Log.i(LOG_TAG, "Not reading SMS because the there is an ongoing call.");
+          Log.i(LOG_TAG, "Not reading SMS because there is an ongoing call.");
           return;
         }
 
@@ -47,7 +47,8 @@ public class HeadphoneSmsApp extends BroadcastReceiver {
           String from = getContactNameFromNumber(smsMessage.getDisplayOriginatingAddress(),
                                                  context.getContentResolver());
 
-          String text = "Received SMS from " + from + ": " + smsMessage.getDisplayMessageBody();
+          String text = context.getString(R.string.speech_receivedSms) + " " + from + ": "
+              + smsMessage.getDisplayMessageBody();
           messages.add(text);
         }
       } else if (intent.getAction().equals(CALL_ACTION)) {
@@ -57,7 +58,7 @@ public class HeadphoneSmsApp extends BroadcastReceiver {
           String phonenumber = bundle.getString(TelephonyManager.EXTRA_INCOMING_NUMBER);
           String from = getContactNameFromNumber(phonenumber, context.getContentResolver());
 
-          String text = "Receiving call from " + from + ".";
+          String text = context.getString(R.string.speech_receivedCall) + " " + from + ".";
           messages.add(text);
         } else if (state.equalsIgnoreCase(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
           Log.i(LOG_TAG, "Call answered, stopping reading.");

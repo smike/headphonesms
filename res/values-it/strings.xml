@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="prefs_screen_title">Impostazioni Headphone SMS</string>
+
+  <string name="enabled_summary">Leggi SMS in arrivo</string>
+  <string name="enabled_title">Abilita</string>
+
+  <string name="activationMode_summary">Scegli quando leggere gli SMS</string>
+  <string name="activationMode_title">Modalità di Attivazione</string>
+  <string-array name="activationMode_labels">
+    <item>Sempre acceso</item>
+    <item>Solo con auricolari</item>
+  </string-array>
+
+  <string name="speech_receivedSms">SMS da</string>
+  <string name="speech_receivedCall">Chiamata da</string>
+</resources>
