@@ -2,7 +2,6 @@ package com.smike.headphonesms;
 
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 
 import android.app.Service;
@@ -10,15 +9,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Binder;
+import android.os.Build;
 import android.os.IBinder;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 
 public class ReadSmsService extends Service {
-  public static final String MESSAGES_EXTRA = "com.smike.headphonesms.MESSAGES";
-  public static final String STOP_READING_EXTRA = "com.smike.headphonesms.STOP_READING";
+  private static final String QUEUE_MESSAGE_EXTRA = "com.smike.headphonesms.QUEUE_MESSAGE";
+  private static final String START_READING_EXTRA = "com.smike.headphonesms.START_READING";
+  private static final String STOP_READING_EXTRA = "com.smike.headphonesms.STOP_READING";
 
-  private static final String LOG_TAG = "HeadphoneSmsApp";
+  private static final String LOG_TAG = ReadSmsService.class.getSimpleName();
 
   private final LocalBinder binder = new LocalBinder();
   private Queue<String> messageQueue = new LinkedList<String>();
@@ -58,58 +59,92 @@ public class ReadSmsService extends Service {
           tts.stop();
         }
 
-        // We still want to stick around long enough for onUtteranceCompleted to get called.
-        return START_STICKY;
-      }
+        // We still want to stick around long enough for onUtteranceCompleted to get called, so let
+        // it call stopSelf();
+      } else if (intent.hasExtra(QUEUE_MESSAGE_EXTRA)) {
+        String message = intent.getStringExtra(QUEUE_MESSAGE_EXTRA);
+        messageQueue.add(message);
 
-      final List<String> messages = intent.getStringArrayListExtra(MESSAGES_EXTRA);
-
-      if (tts != null) {
-        messageQueue.addAll(messages);
-      } else {
-        tts = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
-          @Override
-          public void onInit(int status) {
-            tts.setOnUtteranceCompletedListener(new TextToSpeech.OnUtteranceCompletedListener() {
-              @Override
-              public void onUtteranceCompleted(String utteranceId) {
-                audioManager.setStreamSolo(AudioManager.STREAM_VOICE_CALL, false);
-                synchronized (messageQueue) {
-                  messageQueue.poll();
-                  if (messageQueue.isEmpty()) {
-                    tts.shutdown();
-                    tts = null;
-                    ReadSmsService.this.stopSelf();
-                    Log.i(LOG_TAG, "Nothing else to speak. Shutting down TTS, stopping service.");
-                  } else {
-                    Log.i(LOG_TAG, "Speaking next message.");
-                    speak(messageQueue.peek());
+        // if the TTS service is already running, just queue the message
+        if (tts == null) {
+          if (HeadphoneSmsApp.shouldRead(false, this)) {
+            // We can use non-SCO to read, so do that.
+            ReadSmsService.startReading(this);
+          } else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.FROYO &&
+              audioManager.isBluetoothScoAvailableOffCall()) {
+            Log.i(LOG_TAG, "Starting SCO, will wait until it is connected.");
+            audioManager.startBluetoothSco();
+          }
+        }
+      } else if (intent.hasExtra(START_READING_EXTRA)) {
+        if (tts == null && !messageQueue.isEmpty()) {
+          tts = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+              tts.setOnUtteranceCompletedListener(new TextToSpeech.OnUtteranceCompletedListener() {
+                @Override
+                public void onUtteranceCompleted(String utteranceId) {
+                  audioManager.setStreamSolo(AudioManager.STREAM_VOICE_CALL, false);
+                  synchronized (messageQueue) {
+                    messageQueue.poll();
+                    if (messageQueue.isEmpty()) {
+                      tts.shutdown();
+                      tts = null;
+                      if (Build.VERSION.SDK_INT > Build.VERSION_CODES.FROYO) {
+                        audioManager.stopBluetoothSco();
+                      }
+                      ReadSmsService.this.stopSelf();
+                      Log.i(LOG_TAG, "Nothing else to speak. Shutting down TTS, stopping service.");
+                    } else {
+                      Log.i(LOG_TAG, "Speaking next message.");
+                      speak(messageQueue.peek());
+                    }
                   }
                 }
-              }
-            });
+              });
 
-            synchronized (messageQueue) {
-              messageQueue.addAll(messages);
-              speak(messageQueue.peek());
+              synchronized (messageQueue) {
+                speak(messageQueue.peek());
+              }
             }
-          }
-        });
+          });
+        }
       }
 
       return START_STICKY;
     }
   }
 
-  public void speak(final String text) {
+  private void speak(final String text) {
+    // The first message should clear the queue so we can start speaking right away.
     Log.i(LOG_TAG, "speaking " + text);
     final HashMap<String, String> params = new HashMap<String, String>();
     params.put(TextToSpeech.Engine.KEY_PARAM_STREAM,
                String.valueOf(AudioManager.STREAM_VOICE_CALL));
 
     params.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "valueNotUsed");
-    // The first message should clear the queue so we can start speaking right away.
     audioManager.setStreamSolo(AudioManager.STREAM_VOICE_CALL, true);
     tts.speak(text, TextToSpeech.QUEUE_FLUSH, params);
+  }
+
+  public static void queueMessage(String message, Context context) {
+    Log.i(LOG_TAG, "Queueing message: " + message);
+    Intent readSmsIntent = new Intent(context, ReadSmsService.class);
+    readSmsIntent.putExtra(ReadSmsService.QUEUE_MESSAGE_EXTRA, message);
+    context.startService(readSmsIntent);
+  }
+
+  public static void startReading(Context context) {
+    Log.i(LOG_TAG, "Starting to read message");
+    Intent readSmsIntent = new Intent(context, ReadSmsService.class);
+    readSmsIntent.putExtra(ReadSmsService.START_READING_EXTRA, "");
+    context.startService(readSmsIntent);
+  }
+
+  public static void stopReading(Context context) {
+    Log.i(LOG_TAG, "Stopping reading of messages");
+    Intent readSmsIntent = new Intent(context, ReadSmsService.class);
+    readSmsIntent.putExtra(ReadSmsService.STOP_READING_EXTRA, "");
+    context.startService(readSmsIntent);
   }
 }
