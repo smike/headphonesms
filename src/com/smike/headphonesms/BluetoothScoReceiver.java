@@ -8,8 +8,6 @@ import android.os.Bundle;
 import android.util.Log;
 
 public class BluetoothScoReceiver extends BroadcastReceiver {
-  private static final String SCO_STATE_UPDATE = "android.media.ACTION_SCO_AUDIO_STATE_UPDATED";
-
   private static final String LOG_TAG = BluetoothScoReceiver.class.getSimpleName();
 
   @Override
@@ -20,7 +18,8 @@ public class BluetoothScoReceiver extends BroadcastReceiver {
       return;
     }
 
-    if (intent.getAction().equals(SCO_STATE_UPDATE)) {
+    if (intent.getAction().equals(AudioManager.ACTION_SCO_AUDIO_STATE_CHANGED) ||
+        intent.getAction().equals(AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED)) {
       receivedScoStateUpdate(bundle, context);
     } else {
       Log.w(LOG_TAG, "Received unrecognized action broadcast: " + intent.getAction());

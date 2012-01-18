@@ -29,8 +29,8 @@
 
     <receiver android:name=".BluetoothScoReceiver" android:enabled="true">
       <intent-filter>
-        <action android:name="android.media.ACTION_SCO_AUDIO_STATE_CHANGED" />
-        <action android:name="android.media.ACTION_SCO_AUDIO_STATE_UPDATED" />
+        <action android:name="android.media.SCO_AUDIO_STATE_CHANGED" /> <!-- sdk 8-13 -->
+        <action android:name="android.media.ACTION_SCO_AUDIO_STATE_UPDATED" /> <!-- sdk 14+ -->
       </intent-filter>
     </receiver>
 
