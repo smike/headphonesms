@@ -29,21 +29,28 @@ public class BluetoothScoReceiver extends BroadcastReceiver {
   private void receivedScoStateUpdate(Bundle bundle, Context context) {
     int previousState = bundle.getInt(AudioManager.EXTRA_SCO_AUDIO_PREVIOUS_STATE);
     int state = bundle.getInt(AudioManager.EXTRA_SCO_AUDIO_STATE);
+    Log.i(LOG_TAG, "sco state = " + previousState + " " + state);
+
     if (state == AudioManager.SCO_AUDIO_STATE_DISCONNECTED ||
         state == AudioManager.SCO_AUDIO_STATE_ERROR) {
       AudioManager audioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
       audioManager.stopBluetoothSco();
 
-      // No SCO, but fall back to other methods if available.
       if (HeadphoneSmsApp.shouldRead(false, context)) {
+        // No SCO, but fall back to other methods if available.
         ReadSmsService.startReading(context);
-      } else {
+      } else if (previousState != AudioManager.SCO_AUDIO_STATE_DISCONNECTED) {
+        // unless we are already disconnected (stopped when reading queue empties), stop reading
         ReadSmsService.stopReading(context);
       }
-
     } else if (state == AudioManager.SCO_AUDIO_STATE_CONNECTED) {
+      // Sleep a little to give the connection time to settle so that speech doesn't get cut off.
+      try {
+        Thread.sleep(1000);
+      } catch (InterruptedException e) {
+        Log.w(LOG_TAG, e.toString());
+      }
       ReadSmsService.startReading(context);
     }
-    Log.i(LOG_TAG, "sco state = " + previousState + " " + state);
   }
 }

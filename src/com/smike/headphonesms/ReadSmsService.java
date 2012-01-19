@@ -67,8 +67,10 @@ public class ReadSmsService extends Service {
 
         // if the TTS service is already running, just queue the message
         if (tts == null) {
-          if (HeadphoneSmsApp.shouldRead(false, this)) {
-            // We can use non-SCO to read, so do that.
+          if (audioManager.isBluetoothA2dpOn() ||
+              audioManager.isWiredHeadsetOn()) {
+            // We prefer to use non-sco if it's available. The logic is that if you have your
+            // headphones on in the car, the whole car shouldn't hear your messages.
             ReadSmsService.startReading(this);
           } else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.FROYO &&
               audioManager.isBluetoothScoAvailableOffCall()) {
@@ -88,11 +90,17 @@ public class ReadSmsService extends Service {
                   synchronized (messageQueue) {
                     messageQueue.poll();
                     if (messageQueue.isEmpty()) {
-                      tts.shutdown();
-                      tts = null;
                       if (Build.VERSION.SDK_INT > Build.VERSION_CODES.FROYO) {
+                        // Sleep a little to give the bluetooth device a bit longer to finish.
+                        try {
+                          Thread.sleep(500);
+                        } catch (InterruptedException e) {
+                          Log.w(LOG_TAG, e.toString());
+                        }
                         audioManager.stopBluetoothSco();
                       }
+                      tts.shutdown();
+                      tts = null;
                       ReadSmsService.this.stopSelf();
                       Log.i(LOG_TAG, "Nothing else to speak. Shutting down TTS, stopping service.");
                     } else {
