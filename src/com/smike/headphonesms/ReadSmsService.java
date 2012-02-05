@@ -72,10 +72,13 @@ public class ReadSmsService extends Service {
             // We prefer to use non-sco if it's available. The logic is that if you have your
             // headphones on in the car, the whole car shouldn't hear your messages.
             ReadSmsService.startReading(this);
-          } else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.FROYO &&
+          } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO &&
               audioManager.isBluetoothScoAvailableOffCall()) {
             Log.i(LOG_TAG, "Starting SCO, will wait until it is connected.");
             audioManager.startBluetoothSco();
+          } else if (HeadphoneSmsApp.shouldRead(false, this)) {
+            // In case we should read anyway (reading is always on)
+            ReadSmsService.startReading(this);
           }
         }
       } else if (intent.hasExtra(START_READING_EXTRA)) {
@@ -93,7 +96,7 @@ public class ReadSmsService extends Service {
                       if (Build.VERSION.SDK_INT > Build.VERSION_CODES.FROYO) {
                         // Sleep a little to give the bluetooth device a bit longer to finish.
                         try {
-                          Thread.sleep(500);
+                          Thread.sleep(1000);
                         } catch (InterruptedException e) {
                           Log.w(LOG_TAG, e.toString());
                         }

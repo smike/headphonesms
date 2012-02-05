@@ -117,7 +117,7 @@ public class HeadphoneSmsApp extends BroadcastReceiver {
 
     // else if (activationModeString.equals(context.getString(R.string.activationModeValue_headphonesOnly))) {
     AudioManager audioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
-    return (canUseSco && Build.VERSION.SDK_INT > Build.VERSION_CODES.FROYO &&
+    return (canUseSco && Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO &&
             audioManager.isBluetoothScoAvailableOffCall()) ||
         audioManager.isBluetoothA2dpOn() ||
         audioManager.isWiredHeadsetOn();
