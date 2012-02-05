@@ -19,7 +19,8 @@ public class ReadSmsService extends Service {
   private static final String START_READING_EXTRA = "com.smike.headphonesms.START_READING";
   private static final String STOP_READING_EXTRA = "com.smike.headphonesms.STOP_READING";
 
-  private static final String LOG_TAG = ReadSmsService.class.getSimpleName();
+  private static final String LOG_TAG =
+      HeadphoneSmsApp.LOG_TAG + "." + ReadSmsService.class.getSimpleName();
 
   private final LocalBinder binder = new LocalBinder();
   private Queue<String> messageQueue = new LinkedList<String>();

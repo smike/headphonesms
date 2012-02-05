@@ -8,7 +8,8 @@ import android.os.Bundle;
 import android.util.Log;
 
 public class BluetoothScoReceiver extends BroadcastReceiver {
-  private static final String LOG_TAG = BluetoothScoReceiver.class.getSimpleName();
+  private static final String LOG_TAG =
+      HeadphoneSmsApp.LOG_TAG + "." + BluetoothScoReceiver.class.getSimpleName();
 
   @Override
   public void onReceive(Context context, Intent intent) {

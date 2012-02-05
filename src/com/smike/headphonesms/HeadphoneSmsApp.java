@@ -17,7 +17,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 
 public class HeadphoneSmsApp extends BroadcastReceiver {
-  private static final String LOG_TAG = HeadphoneSmsApp.class.getSimpleName();
+  public static final String LOG_TAG = HeadphoneSmsApp.class.getSimpleName();
 
   private static final String SMS_ACTION = "android.provider.Telephony.SMS_RECEIVED";
   private static final String CALL_ACTION = "android.intent.action.PHONE_STATE";
