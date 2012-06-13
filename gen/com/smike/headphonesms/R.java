@@ -46,8 +46,8 @@ public final class R {
         public static final int prefs_screen_title=0x7f050001;
         public static final int speech_receivedCall=0x7f05000a;
         public static final int speech_receivedSms=0x7f050009;
-        public static final int volume_title=0x7f050007;
-        public static final int volume_useDefault_summary=0x7f050008;
+        public static final int volume_title=0x7f050008;
+        public static final int volume_useDefault_summary=0x7f050007;
     }
     public static final class xml {
         public static final int onoff_widget_info=0x7f040000;
