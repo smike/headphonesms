@@ -12,6 +12,9 @@
     <item>Solo con auricolari</item>
   </string-array>
 
+  <string name="volume_useDefault_summary">Utilizzare volume di chiamata di default</string>
+  <string name="volume_title">Volume del lettura</string>
+
   <string name="speech_receivedSms">SMS da</string>
   <string name="speech_receivedCall">Chiamata da</string>
 </resources>

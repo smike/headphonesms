@@ -19,8 +19,8 @@
     <item>@string/activationModeValue_headphonesOnly</item>
   </string-array>
 
-  <string name="volume_title">Reading volume</string>
   <string name="volume_useDefault_summary">Use default call volume</string>
+  <string name="volume_title">Reading volume</string>
 
   <string name="speech_receivedSms">SMS from</string>
   <string name="speech_receivedCall">Call from</string>
