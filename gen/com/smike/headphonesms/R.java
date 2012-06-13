@@ -22,25 +22,32 @@ public final class R {
     }
     public static final class id {
         public static final int onoff_widget_button=0x7f070000;
+        public static final int use_default_volume=0x7f070001;
+        public static final int volume=0x7f070002;
     }
     public static final class layout {
         public static final int onoff_widget=0x7f030000;
+        public static final int volume_dialog=0x7f030001;
     }
     public static final class string {
-        public static final int activationModeValue_always=0x7f05000c;
-        public static final int activationModeValue_headphonesOnly=0x7f05000d;
-        public static final int activationMode_summary=0x7f050004;
-        public static final int activationMode_title=0x7f050005;
+        public static final int activationModeValue_always=0x7f05000f;
+        public static final int activationModeValue_headphonesOnly=0x7f050010;
+        public static final int activationMode_summary=0x7f050005;
+        public static final int activationMode_title=0x7f050006;
         public static final int app_name=0x7f050000;
-        public static final int enabled_summary=0x7f050002;
-        public static final int enabled_title=0x7f050003;
-        public static final int prefsKey=0x7f050009;
-        public static final int prefsKey_activationMode=0x7f05000b;
-        public static final int prefsKey_enabled=0x7f05000a;
-        public static final int prefsName=0x7f050008;
+        public static final int enabled_summary=0x7f050003;
+        public static final int enabled_title=0x7f050004;
+        public static final int ok=0x7f050002;
+        public static final int prefsKey=0x7f05000c;
+        public static final int prefsKey_activationMode=0x7f05000e;
+        public static final int prefsKey_enabled=0x7f05000d;
+        public static final int prefsKey_volume=0x7f050011;
+        public static final int prefsName=0x7f05000b;
         public static final int prefs_screen_title=0x7f050001;
-        public static final int speech_receivedCall=0x7f050007;
-        public static final int speech_receivedSms=0x7f050006;
+        public static final int speech_receivedCall=0x7f05000a;
+        public static final int speech_receivedSms=0x7f050009;
+        public static final int volume_title=0x7f050007;
+        public static final int volume_useDefault_summary=0x7f050008;
     }
     public static final class xml {
         public static final int onoff_widget_info=0x7f040000;

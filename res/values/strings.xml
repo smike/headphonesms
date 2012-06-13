@@ -3,6 +3,8 @@
   <string name="app_name">Headphone SMS</string>
   <string name="prefs_screen_title">Headphone SMS Settings</string>
 
+  <string name="ok">OK</string>
+
   <string name="enabled_summary">Read incoming messages</string>
   <string name="enabled_title">Enabled</string>
 
@@ -17,6 +19,9 @@
     <item>@string/activationModeValue_headphonesOnly</item>
   </string-array>
 
+  <string name="volume_title">Reading volume</string>
+  <string name="volume_useDefault_summary">Use default call volume</string>
+
   <string name="speech_receivedSms">SMS from</string>
   <string name="speech_receivedCall">Call from</string>
 
@@ -26,4 +31,5 @@
   <string name="prefsKey_activationMode">activationMode</string>
   <string name="activationModeValue_always">ALWAYS_ON</string>
   <string name="activationModeValue_headphonesOnly">HEADPHONES_ONLY</string>
+  <string name="prefsKey_volume">volume</string>
 </resources>

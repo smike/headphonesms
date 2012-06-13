@@ -9,14 +9,18 @@ import java.util.TimerTask;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 
 public class ReadSmsService extends Service {
+  public static final int READING_AUDIO_STREAM = AudioManager.STREAM_VOICE_CALL;
+
   private static final String BLUETOOTH_TIMEOUT_EXTRA = "com.smike.headphonesms.BLUETOOTH_TIMEOUT";
   private static final String QUEUE_MESSAGE_EXTRA = "com.smike.headphonesms.QUEUE_MESSAGE";
   private static final String START_READING_EXTRA = "com.smike.headphonesms.START_READING";
@@ -32,6 +36,7 @@ public class ReadSmsService extends Service {
   private TextToSpeech tts;
 
   private AudioManager audioManager;
+  private int systemVolume;
 
   public class LocalBinder extends Binder {
     ReadSmsService getService() {
@@ -117,7 +122,7 @@ public class ReadSmsService extends Service {
               tts.setOnUtteranceCompletedListener(new TextToSpeech.OnUtteranceCompletedListener() {
                 @Override
                 public void onUtteranceCompleted(String utteranceId) {
-                  audioManager.setStreamSolo(AudioManager.STREAM_VOICE_CALL, false);
+                  restoreAudio();
                   synchronized (messageQueue) {
                     messageQueue.poll();
                     if (messageQueue.isEmpty()) {
@@ -159,11 +164,34 @@ public class ReadSmsService extends Service {
     Log.i(LOG_TAG, "speaking \"" + text + "\"");
     final HashMap<String, String> params = new HashMap<String, String>();
     params.put(TextToSpeech.Engine.KEY_PARAM_STREAM,
-               String.valueOf(AudioManager.STREAM_VOICE_CALL));
+               String.valueOf(READING_AUDIO_STREAM));
 
     params.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "valueNotUsed");
-    audioManager.setStreamSolo(AudioManager.STREAM_VOICE_CALL, true);
+    prepareAudio();
     tts.speak(text, TextToSpeech.QUEUE_FLUSH, params);
+  }
+
+  private void prepareAudio() {
+    audioManager.setStreamSolo(READING_AUDIO_STREAM, true);
+
+    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+    int desiredVolume = sharedPreferences.getInt(getString(R.string.prefsKey_volume), -1);
+
+    systemVolume = audioManager.getStreamVolume(READING_AUDIO_STREAM);
+
+    // -1 means use the system volume.
+    if (desiredVolume != -1) {
+      int boudedDesiredVolume =
+          Math.min(desiredVolume, audioManager.getStreamMaxVolume(READING_AUDIO_STREAM));
+      Log.i(LOG_TAG, "Temporarily setting volume to " + boudedDesiredVolume);
+      audioManager.setStreamVolume(READING_AUDIO_STREAM, boudedDesiredVolume, 0);
+    }
+  }
+
+  private void restoreAudio() {
+    Log.i(LOG_TAG, "Resetting volume to " + systemVolume);
+    audioManager.setStreamVolume(READING_AUDIO_STREAM, systemVolume, 0);
+    audioManager.setStreamSolo(READING_AUDIO_STREAM, false);
   }
 
   public static void queueMessage(String message, Context context) {

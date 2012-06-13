@@ -3,8 +3,10 @@ package com.smike.headphonesms;
 import android.app.backup.BackupManager;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
+import android.preference.DialogPreference;
 import android.preference.ListPreference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
@@ -27,7 +29,11 @@ public class SettingsActivity extends PreferenceActivity {
       @Override
       public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         OnOffAppWidgetProvider.update(getApplicationContext());
-        BackupManager.dataChanged(getPackageName());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
+          BackupManager.dataChanged(getPackageName());
+        }
+
         onContentChanged();
         updateView(sharedPreferences);
       }
@@ -46,5 +52,9 @@ public class SettingsActivity extends PreferenceActivity {
     ListPreference listPreference = (ListPreference)this.findPreference(activationModeKey);
     listPreference.setValue(sharedPreferences.getString(activationModeKey, null));
     listPreference.setEnabled(enabledValue);
+
+    String volumeKey = getString(R.string.prefsKey_volume);
+    DialogPreference dialogPreference = (DialogPreference)this.findPreference(volumeKey);
+    dialogPreference.setDialogLayoutResource(R.layout.volume_dialog);
   }
 }
