@@ -5,6 +5,7 @@ import android.app.backup.BackupManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.os.Build;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 
@@ -15,14 +16,16 @@ public class ToggleOnOffService extends Service {
 
     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
     String key = getString(R.string.prefsKey_enabled);
-    boolean enabled = sharedPreferences.getBoolean(key, false);
 
     Editor editor = sharedPreferences.edit();
-    editor.putBoolean(key, !enabled);
+    editor.putBoolean(key, !SettingsUtil.isEnabled(getApplicationContext()));
     editor.commit();
 
     OnOffAppWidgetProvider.update(getApplicationContext());
-    BackupManager.dataChanged(getPackageName());
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
+      BackupManager.dataChanged(getPackageName());
+    }
   }
 
   @Override

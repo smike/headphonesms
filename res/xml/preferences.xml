@@ -16,8 +16,14 @@
   <com.smike.headphonesms.VolumeDialogPreference android:key="@string/prefsKey_volume"
     android:title="@string/volume_title"
     android:dialogTitle="@string/volume_title"
+    android:dialogLayout="@layout/volume_dialog"
     android:positiveButtonText="@string/ok"
     android:negativeButtonText="@null"
     android:defaultValue="-1"
+    android:persistent="true"/>
+  <CheckBoxPreference android:key="@string/prefsKey_preferSco"
+    android:title="@string/preferSco_title"
+    android:summary="@string/preferSco_summary"
+    android:defaultValue="false"
     android:persistent="true"/>
 </PreferenceScreen>

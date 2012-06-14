@@ -6,7 +6,7 @@
   <string name="enabled_title">Abilita</string>
 
   <string name="activationMode_summary">Scegli quando leggere gli SMS</string>
-  <string name="activationMode_title">Modalità di Attivazione</string>
+  <string name="activationMode_title">Modalità di attivazione</string>
   <string-array name="activationMode_labels">
     <item>Sempre acceso</item>
     <item>Solo con auricolari</item>
@@ -14,6 +14,11 @@
 
   <string name="volume_useDefault_summary">Utilizzare volume di chiamata di default</string>
   <string name="volume_title">Volume del lettura</string>
+
+  <string name="preferSco_summary">
+    Utilizzare un auricolare Bluetooth, se Bluetooth e cuffie sono disponibili.
+  </string>
+  <string name="preferSco_title">Preferiscono Bluetooth</string>
 
   <string name="speech_receivedSms">SMS da</string>
   <string name="speech_receivedCall">Chiamata da</string>

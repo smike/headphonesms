@@ -4,17 +4,17 @@ import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.provider.ContactsContract.PhoneLookup;
 import android.telephony.SmsMessage;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+
+import com.smike.headphonesms.SettingsUtil.ActivationMode;
 
 public class HeadphoneSmsApp extends BroadcastReceiver {
   public static final String LOG_TAG = HeadphoneSmsApp.class.getSimpleName();
@@ -38,7 +38,7 @@ public class HeadphoneSmsApp extends BroadcastReceiver {
         Log.w(LOG_TAG, "Received unrecognized action broadcast: " + intent.getAction());
       }
     } else {
-      Log.i(LOG_TAG, "Headset not connected, doing nothing");
+      Log.i(LOG_TAG, "Headset not connected or disabled, doing nothing");
     }
   }
 
@@ -103,15 +103,11 @@ public class HeadphoneSmsApp extends BroadcastReceiver {
   }
 
   public static boolean shouldRead(boolean canUseSco, Context context) {
-    PreferenceManager.setDefaultValues(context, R.xml.preferences, false);
-    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-    if (!sharedPreferences.getBoolean(context.getString(R.string.prefsKey_enabled), false)) {
+    if (!SettingsUtil.isEnabled(context)) {
       return false;
     }
 
-    String activationModeString =
-        sharedPreferences.getString(context.getString(R.string.prefsKey_activationMode), null);
-    if (activationModeString.equals(context.getString(R.string.activationModeValue_always))) {
+    if (SettingsUtil.getActivationMode(context) == ActivationMode.ALWAYS_ON) {
       return true;
     }
 

@@ -9,9 +9,9 @@
   <string name="enabled_title">Enabled</string>
 
   <string name="activationMode_summary">Choose when to read messages</string>
-  <string name="activationMode_title">Activation Mode</string>
+  <string name="activationMode_title">Activation mode</string>
   <string-array name="activationMode_labels">
-    <item>Always On</item>
+    <item>Always on</item>
     <item>Only with headphones</item>
   </string-array>
   <string-array name="activationMode_values">
@@ -21,6 +21,11 @@
 
   <string name="volume_useDefault_summary">Use default call volume</string>
   <string name="volume_title">Reading volume</string>
+
+  <string name="preferSco_summary">
+    Use a Bluetooth headset if Bluetooth and headphones are available.
+  </string>
+  <string name="preferSco_title">Prefer Bluetooth</string>
 
   <string name="speech_receivedSms">SMS from</string>
   <string name="speech_receivedCall">Call from</string>
@@ -32,4 +37,5 @@
   <string name="activationModeValue_always">ALWAYS_ON</string>
   <string name="activationModeValue_headphonesOnly">HEADPHONES_ONLY</string>
   <string name="prefsKey_volume">volume</string>
+  <string name="prefsKey_preferSco">preferSco</string>
 </resources>

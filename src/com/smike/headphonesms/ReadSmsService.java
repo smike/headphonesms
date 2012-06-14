@@ -9,12 +9,10 @@ import java.util.TimerTask;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 
@@ -66,9 +64,13 @@ public class ReadSmsService extends Service {
       if (intent.hasExtra(BLUETOOTH_TIMEOUT_EXTRA)) {
         if (bluetoothTimerTask != null) {
           audioManager.stopBluetoothSco();
-          startReading(this);
           bluetoothTimerTask.cancel();
           bluetoothTimerTask = null;
+
+          if (HeadphoneSmsApp.shouldRead(false, this)) {
+            // If SCO failed but we have another method we can read through, do so.
+            startReading(this);
+          }
         }
       } else if (intent.hasExtra(STOP_READING_EXTRA)) {
         if (tts != null) {
@@ -85,8 +87,9 @@ public class ReadSmsService extends Service {
 
         // if the TTS service is already running, just queue the message
         if (tts == null) {
-          if (audioManager.isBluetoothA2dpOn() ||
-              audioManager.isWiredHeadsetOn()) {
+          if (!SettingsUtil.isPreferSco(this) &&
+              (audioManager.isBluetoothA2dpOn() ||
+               audioManager.isWiredHeadsetOn())) {
             // We prefer to use non-sco if it's available. The logic is that if you have your
             // headphones on in the car, the whole car shouldn't hear your messages.
             ReadSmsService.startReading(this);
@@ -174,8 +177,7 @@ public class ReadSmsService extends Service {
   private void prepareAudio() {
     audioManager.setStreamSolo(READING_AUDIO_STREAM, true);
 
-    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-    int desiredVolume = sharedPreferences.getInt(getString(R.string.prefsKey_volume), -1);
+    int desiredVolume = SettingsUtil.getVolume(this);
 
     systemVolume = audioManager.getStreamVolume(READING_AUDIO_STREAM);
 

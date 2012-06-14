@@ -6,8 +6,6 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
-import android.preference.DialogPreference;
-import android.preference.ListPreference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 
@@ -43,18 +41,20 @@ public class SettingsActivity extends PreferenceActivity {
   // TODO(smike): Find a cleaner way to update preferences that might have been changed in
   // elsewhere. There must be a way to do all prefs automatically.
   private void updateView(SharedPreferences sharedPreferences) {
-    String enabledKey = getString(R.string.prefsKey_enabled);
-    CheckBoxPreference checkBoxPreference = (CheckBoxPreference)this.findPreference(enabledKey);
-    boolean enabledValue = sharedPreferences.getBoolean(enabledKey, false);
-    checkBoxPreference.setChecked(enabledValue);
+    // enabled is the only setting that could have changed (by the widget).
+    boolean enabled = SettingsUtil.isEnabled(this);
 
-    String activationModeKey = getString(R.string.prefsKey_activationMode);
-    ListPreference listPreference = (ListPreference)this.findPreference(activationModeKey);
-    listPreference.setValue(sharedPreferences.getString(activationModeKey, null));
-    listPreference.setEnabled(enabledValue);
+    String key = getString(R.string.prefsKey_enabled);
+    CheckBoxPreference enabledPreference = (CheckBoxPreference)this.findPreference(key);
+    enabledPreference.setChecked(enabled);
 
-    String volumeKey = getString(R.string.prefsKey_volume);
-    DialogPreference dialogPreference = (DialogPreference)this.findPreference(volumeKey);
-    dialogPreference.setDialogLayoutResource(R.layout.volume_dialog);
+    key = getString(R.string.prefsKey_activationMode);
+    this.findPreference(key).setEnabled(enabled);
+
+    key = getString(R.string.prefsKey_volume);
+    this.findPreference(key).setEnabled(enabled);
+
+    key = getString(R.string.prefsKey_preferSco);
+    this.findPreference(key).setEnabled(enabled);
   }
 }
