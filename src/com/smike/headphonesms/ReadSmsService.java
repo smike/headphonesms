@@ -72,15 +72,16 @@ public class ReadSmsService extends Service {
             startReading(this);
           } else {
             // Otherwise clear the queue.
-            stopReading(this);
+            messageQueue.clear();
           }
         }
       } else if (intent.hasExtra(STOP_READING_EXTRA)) {
         if (tts != null) {
           // This will trigger onUtteranceCompleted, so we don't have to worry about cleaning up.
           tts.stop();
-          messageQueue.clear();
         }
+
+        messageQueue.clear();
 
         // We still want to stick around long enough for onUtteranceCompleted to get called, so let
         // it call stopSelf();
@@ -182,21 +183,24 @@ public class ReadSmsService extends Service {
 
     int desiredVolume = SettingsUtil.getVolume(this);
 
-    systemVolume = audioManager.getStreamVolume(READING_AUDIO_STREAM);
-
     // -1 means use the system volume.
     if (desiredVolume != -1) {
+      systemVolume = audioManager.getStreamVolume(READING_AUDIO_STREAM);
       int boudedDesiredVolume =
           Math.min(desiredVolume, audioManager.getStreamMaxVolume(READING_AUDIO_STREAM));
       Log.i(LOG_TAG, "Temporarily setting volume to " + boudedDesiredVolume);
       audioManager.setStreamVolume(READING_AUDIO_STREAM, boudedDesiredVolume, 0);
+    } else {
+      systemVolume = -1;
     }
   }
 
   private void restoreAudio() {
-    Log.i(LOG_TAG, "Resetting volume to " + systemVolume);
-    audioManager.setStreamVolume(READING_AUDIO_STREAM, systemVolume, 0);
-    audioManager.setStreamSolo(READING_AUDIO_STREAM, false);
+    if (systemVolume != -1) {
+      Log.i(LOG_TAG, "Resetting volume to " + systemVolume);
+      audioManager.setStreamVolume(READING_AUDIO_STREAM, systemVolume, 0);
+      audioManager.setStreamSolo(READING_AUDIO_STREAM, false);
+    }
   }
 
   public static void queueMessage(String message, Context context) {
