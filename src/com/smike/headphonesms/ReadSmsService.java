@@ -70,6 +70,9 @@ public class ReadSmsService extends Service {
           if (HeadphoneSmsApp.shouldRead(false, this)) {
             // If SCO failed but we have another method we can read through, do so.
             startReading(this);
+          } else {
+            // Otherwise clear the queue.
+            stopReading(this);
           }
         }
       } else if (intent.hasExtra(STOP_READING_EXTRA)) {
