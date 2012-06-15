@@ -199,8 +199,8 @@ public class ReadSmsService extends Service {
     if (systemVolume != -1) {
       Log.i(LOG_TAG, "Resetting volume to " + systemVolume);
       audioManager.setStreamVolume(READING_AUDIO_STREAM, systemVolume, 0);
-      audioManager.setStreamSolo(READING_AUDIO_STREAM, false);
     }
+    audioManager.setStreamSolo(READING_AUDIO_STREAM, false);
   }
 
   public static void queueMessage(String message, Context context) {
