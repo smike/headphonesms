@@ -12,13 +12,13 @@
     <item>Solo con auricolari</item>
   </string-array>
 
-  <string name="volume_useDefault_summary">Utilizzare volume di chiamata di default</string>
-  <string name="volume_title">Volume del lettura</string>
+  <string name="volume_useDefault_summary">Utilizzare il volume di default della chiamata</string>
+  <string name="volume_title">Volume di lettura</string>
 
   <string name="preferSco_summary">
-    Utilizzare un auricolare Bluetooth, se Bluetooth e cuffie sono disponibili.
+    Utilizzare l'auricolare Bluetooth se sia Bluetooth che cuffie sono connessi
   </string>
-  <string name="preferSco_title">Preferiscono Bluetooth</string>
+  <string name="preferSco_title">Preferenze Bluetooth</string>
 
   <string name="speech_receivedSms">SMS da</string>
   <string name="speech_receivedCall">Chiamata da</string>
