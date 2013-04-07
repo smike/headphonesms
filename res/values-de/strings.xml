@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="prefs_screen_title">Headphone SMS Einstellungen</string>
+
+  <string name="ok">OK</string>
+
+  <string name="enabled_summary">Einlangende Nachrichten vorlesen</string>
+  <string name="enabled_title">Aktiviert</string>
+
+  <string name="activationMode_summary">Wählen Sie, wann Nachrichten gelesen werden sollen</string>
+  <string name="activationMode_title">Art der Aktivierung</string>
+  <string-array name="activationMode_labels">
+    <item>Immer aktiv</item>
+    <item>Nur mit Kopfhörern</item>
+  </string-array>
+
+  <string name="volume_useDefault_summary">Standard-Anruflautstärke benutzen</string>
+  <string name="volume_title">Lautstärke</string>
+
+  <string name="preferSco_summary">
+    Bluetooth-Headset bevorzugen, wenn Bluetooth und Kopfhörer vorhanden sind.
+  </string>
+  <string name="preferSco_title">Bluetooth bevorzugen</string>
+
+  <string name="speech_receivedSms">SMS von</string>
+  <string name="speech_receivedCall">Anruf von</string>
+</resources>
