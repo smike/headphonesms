@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="prefs_screen_title">Параметры Headphone SMS</string>
+
+  <string name="ok">OK</string>
+
+  <string name="enabled_summary">Должен ли читать сообщения</string>
+  <string name="enabled_title">Включено</string>
+
+  <string name="activationMode_summary">Выбираете когда читать сообщения</string>
+  <string name="activationMode_title">Режим Активации</string>
+  <string-array name="activationMode_labels">
+    <item>Всегда</item>
+    <item>Только с Наушниками</item>
+  </string-array>
+
+  <string name="volume_useDefault_summary">Использовать системною громкости звонков</string>
+  <string name="volume_title">громкости чтения</string>
+
+  <string name="preferSco_summary">
+    используй Bluetooth даже если есть наушники.
+  </string>
+  <string name="preferSco_title">используй Bluetooth</string>
+
+  <!--
+  // TODO(smike): add test to see if TTS can handle russian strings (Google Network TTS can't)
+  // first.
+  <string name="speech_receivedSms">Текст от</string>
+  <string name="speech_receivedCall">Звонок от</string>
+  -->
+</resources>
